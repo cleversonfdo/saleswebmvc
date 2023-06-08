@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SalesWebMvc.Models;
+using SalesWebMvc.Data;
 //using SalesWebMvc.Data;
 
 namespace SalesWebMvc
@@ -40,16 +41,22 @@ namespace SalesWebMvc
             services.AddDbContext<SalesWebMvcContext>(options =>
                     options.UseMySql(Configuration.GetConnectionString("SalesWebMvcContext"), builder =>
                         builder.MigrationsAssembly("SalesWebMvc")));
+            //registra o serviço no sistema de injeção de dependência da aplicação
+            services.AddScoped<SeedingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedingService seedingService)
+                                                                            //, a inserção de mais um parâmetro funciona
+                                                                            //pois a classe está registrada no sistema de
+                                                                            //injeção de dependência
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment())//se estou no perfil de desenvolvimento
             {
                 app.UseDeveloperExceptionPage();
+                seedingService.Seed(); //invoca o método que popula o db
             }
-            else
+            else//mas se estiver no perfil de produção
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
