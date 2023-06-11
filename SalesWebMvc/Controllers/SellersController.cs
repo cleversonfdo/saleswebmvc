@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SalesWebMvc.Models;
 using SalesWebMvc.Services;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,21 @@ namespace SalesWebMvc.Controllers
         {
             var list = _sellerService.FindAll();//controlador acessa o model
             return View(list);//encaminhando dados para a view
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        //informar que a ação de post e não de get
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Seller seller)
+        {
+            _sellerService.Insert(seller);
+            //com nameof se mudar o nome do metodo index não precisa mudar aqui
+            return RedirectToAction(nameof(Index));//("Index")
         }
     }
 }
