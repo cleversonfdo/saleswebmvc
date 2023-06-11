@@ -43,5 +43,30 @@ namespace SalesWebMvc.Controllers
             //com nameof se mudar o nome do metodo index não precisa mudar aqui
             return RedirectToAction(nameof(Index));//("Index")
         }
+
+        //janela de confirmação para o delete do tipo GET action
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sellerService.Remove(id);
+            return RedirectToAction(nameof(Index));
+
+        }
     }
 }
