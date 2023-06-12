@@ -14,6 +14,9 @@ using SalesWebMvc.Models;
 using SalesWebMvc.Data;
 using SalesWebMvc.Services;
 
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+
 namespace SalesWebMvc
 {
     public class Startup
@@ -53,6 +56,17 @@ namespace SalesWebMvc
                                                                             //pois a classe está registrada no sistema de
                                                                             //injeção de dependência
         {
+            //defining localization for time and currency standards
+            var enUS = new CultureInfo("en-US");
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(enUS),
+                SupportedCultures = new List<CultureInfo> { enUS },
+                SupportedUICultures = new List<CultureInfo> { enUS }
+            };
+
+            app.UseRequestLocalization(localizationOptions);
+
             if (env.IsDevelopment())//se estou no perfil de desenvolvimento
             {
                 app.UseDeveloperExceptionPage();
